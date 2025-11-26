@@ -46,47 +46,47 @@
             filter: grayscale(100%) brightness(0.6);
         }
 
-        /* Dé */
+        /* 🎲 --- DÉ (NOUVELLES COULEURS) --- */
         #de {
             width: 180px;
             height: 180px;
             margin: 0 auto;
-            background: linear-gradient(145deg, #fff5e6, #f5e2b8);
-            color: #2e1f47;
+            background: linear-gradient(145deg, #343121, #2a281f);
+            color: #B88B4D;
             font-size: 60px;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 25px;
-            border: 5px solid #BA7648;
+            border: 5px solid #B88B4D;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 
-                0 10px 25px rgba(0,0,0,0.5),
-                inset 0 2px 5px rgba(255,255,255,0.5),
-                inset 0 -2px 5px rgba(0,0,0,0.2);
+                0 10px 25px rgba(0,0,0,0.6),
+                inset 0 2px 5px rgba(255,255,255,0.1),
+                inset 0 -2px 5px rgba(0,0,0,0.3);
             position: relative;
             transform-style: preserve-3d;
             perspective: 1000px;
         }
 
-        /* Suppression hover moche */
+        /* PAS DE HOVER MOCHE */
         #de:hover {
             transform: none;
             box-shadow: 
-                0 10px 25px rgba(0,0,0,0.5),
-                inset 0 2px 5px rgba(255,255,255,0.5),
-                inset 0 -2px 5px rgba(0,0,0,0.2);
+                0 10px 25px rgba(0,0,0,0.6),
+                inset 0 2px 5px rgba(255,255,255,0.15),
+                inset 0 -2px 5px rgba(0,0,0,0.3);
         }
 
         #de.action {
-            background: linear-gradient(145deg, #d49768, #BA7648);
+            background: linear-gradient(145deg, #B88B4D, #8e6c38);
             color: #fff;
-            border-color: #7E6C7C;
+            border-color: #e4c691;
             box-shadow: 
-                0 15px 40px rgba(186, 118, 72, 0.9),
-                0 0 30px rgba(186, 118, 72, 0.6),
+                0 15px 40px rgba(184,139,77,0.9),
+                0 0 30px rgba(184,139,77,0.6),
                 inset 0 2px 8px rgba(255,255,255,0.3);
             animation: pulse-shake 0.6s ease-in-out;
         }
@@ -127,6 +127,7 @@
         #resultat .emoji { font-size: 1.5em; }
         #resultat .text { font-size: 0.8em; }
 
+        /* Particles - Stars - Flash */
         .particle, .star, .flash-overlay { pointer-events: none; }
 
         .particle {
@@ -155,13 +156,14 @@
         .flash-overlay {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle, rgba(186,118,72,0.4), transparent);
+            background: radial-gradient(circle, rgba(255,255,200,0.35), transparent);
             animation: flash 0.5s ease-out;
         }
 
         @keyframes flash {
             50% { opacity: 1; }
         }
+
     </style>
 </head>
 
@@ -185,7 +187,7 @@
         const resultatDiv = document.getElementById("resultat");
         const bouton = document.getElementById("lancer");
 
-        /* Sons */
+        /* 🌟 Sons */
         const soundRoll = new Audio("sounds/roll.mp3");
         const soundSuccess = new Audio("sounds/success.mp3");
         const soundFail = new Audio("sounds/fail.mp3");
@@ -231,9 +233,7 @@
 
         function lancerDeSimule() {
 
-            // Reset personnage
             perso.classList.remove("happy","sad");
-
             resultatDiv.innerHTML = "";
             resultatDiv.classList.remove("action","echec");
 
@@ -245,6 +245,7 @@
 
             let compteur = 0;
             const interval = setInterval(() => {
+
                 de.textContent = faces[Math.floor(Math.random()*faces.length)];
                 compteur++;
 
@@ -260,6 +261,7 @@
                     setTimeout(() => {
 
                         if (final === actionFace) {
+
                             soundSuccess.currentTime = 0;
                             soundSuccess.play();
 
@@ -272,6 +274,7 @@
                             resultatDiv.classList.add("action");
 
                             de.classList.add("action");
+
                             createFlash();
                             createParticles();
                             createStars();
@@ -279,6 +282,7 @@
                             setTimeout(()=>de.classList.remove("action"),600);
 
                         } else {
+
                             soundFail.currentTime = 0;
                             soundFail.play();
 
