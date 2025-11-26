@@ -9,10 +9,11 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: linear-gradient(135deg, #E0DEDD, #3355B8);
             color: #fff;
             padding: 20px;
             margin: 0;
+            overflow-x: hidden;
         }
 
         h1 {
@@ -21,52 +22,73 @@
             text-shadow: 2px 2px 5px #000;
         }
 
-        /* NEW info line */
         #info {
             font-size: 1.2em;
             margin-bottom: 20px;
             opacity: 0.9;
         }
 
+        /* Personnage */
+        #perso {
+            width: 180px;
+            height: auto;
+            margin: 0 auto 20px auto;
+            transition: transform 0.4s ease, filter 0.4s ease;
+        }
+
+        #perso.happy {
+            transform: scale(1.15) rotate(5deg);
+            filter: drop-shadow(0 0 15px #ffe17a);
+        }
+
+        #perso.sad {
+            transform: scale(0.85);
+            filter: grayscale(100%) brightness(0.6);
+        }
+
+        /* Dé */
         #de {
             width: 180px;
             height: 180px;
             margin: 0 auto;
-            background: #fff;
-            color: #333;
+            background: linear-gradient(145deg, #E0DEDD, #3355B8);
+            color: #fff;
             font-size: 60px;
+            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 20px;
-            border: 5px solid #444;
+            border-radius: 25px;
+            border: 5px solid #3355B8;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            box-shadow: 
+                0 10px 25px rgba(0,0,0,0.5),
+                inset 0 2px 5px rgba(255,255,255,0.5),
+                inset 0 -2px 5px rgba(0,0,0,0.2);
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
         #de.action {
-            background: #ffdd57;
-            color: #000;
-            border-color: #ff9900;
-            box-shadow: 0 10px 30px rgba(255,200,50,0.7);
+            background: #3355B8;
+            color: #E0DEDD;
+            border-color: #E0DEDD;
+            box-shadow: 0 15px 40px rgba(51,85,184,0.9),
+                        0 0 30px rgba(51,85,184,0.6),
+                        inset 0 2px 8px rgba(255,255,255,0.3);
         }
 
         #resultat {
-            font-size: 1.8em;
+            font-size: 2.5em;
             margin-top: 25px;
-            min-height: 50px;
-            transition: color 0.3s;
+            min-height: 80px;
+            font-weight: bold;
         }
 
-        #resultat.action {
-            color: #ffdd57;
-            text-shadow: 2px 2px 5px #000;
-        }
-
-        #resultat.echec {
-            color: #ccc;
-        }
+        #resultat.action { color: #E0DEDD; }
+        #resultat.echec { color: #ccc; }
 
         button {
             margin-top: 30px;
@@ -75,60 +97,35 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            background: #ff9900;
+            background: #3355B8;
             color: #fff;
-            transition: background 0.3s;
+            transition: all 0.3s;
             width: 80%;
             max-width: 250px;
         }
 
         button:hover {
-            background: #ffcc33;
+            background: #556fd1;
         }
 
-        /* 📱 Mobile mode */
+        /* Mobile */
         @media (max-width: 600px) {
-
-            body {
-                padding: 10px;
-            }
-
-            h1 {
-                font-size: 1.7em;
-                margin-bottom: 8px;
-            }
-
-            #info {
-                font-size: 1em;
-                margin-bottom: 12px;
-            }
-
-            #de {
-                width: 130px;
-                height: 130px;
-                font-size: 40px;
-                border-width: 4px;
-            }
-
-            #resultat {
-                font-size: 1.4em;
-                margin-top: 15px;
-            }
-
-            button {
-                font-size: 1.1em;
-                padding: 10px 15px;
-                width: 90%;
-                max-width: 220px;
-            }
+            body { padding: 10px; }
+            h1 { font-size: 1.7em; margin-bottom: 8px; }
+            #info { font-size: 1em; margin-bottom: 12px; }
+            #de { width: 130px; height: 130px; font-size: 40px; border-width: 4px; }
+            #resultat { font-size: 1.4em; margin-top: 15px; }
+            button { font-size: 1.1em; padding: 10px 15px; width: 90%; max-width: 220px; }
         }
-
     </style>
 </head>
+
 <body>
 
     <h1>Magic 10-Sided Dice</h1>
-    <div id="info">Roll a <strong>5</strong> to draw a hard card!</div>
+    <div id="info">Roll a <strong>5</strong> REMOVE 1 DICE !</div>
+
+    <img id="perso" src="image/3 1.png" alt="Personnage" />
 
     <div id="de">🎲</div>
     <div id="resultat"></div>
@@ -140,32 +137,34 @@
         const de = document.getElementById('de');
         const resultatDiv = document.getElementById('resultat');
         const bouton = document.getElementById('lancer');
+        const perso = document.getElementById('perso');
 
         function lancerDeSimule() {
-            let compteur = 0;
-            const iterations = 20;
+            perso.classList.remove("happy","sad");
+            resultatDiv.innerHTML = "";
+            resultatDiv.classList.remove("action","echec");
+            de.classList.remove("action");
 
+            let compteur = 0;
             const interval = setInterval(() => {
                 const chiffreTemp = faces[Math.floor(Math.random() * faces.length)];
                 de.textContent = chiffreTemp;
                 compteur++;
-
-                if (compteur >= iterations) {
+                if (compteur >= 20) {
                     clearInterval(interval);
-
                     const final = faces[Math.floor(Math.random() * faces.length)];
                     de.textContent = final;
 
-                    if (final === actionFace) {
+                    if(final === actionFace){
                         resultatDiv.textContent = "Remove 1 dice!";
                         de.classList.add("action");
                         resultatDiv.classList.add("action");
-                        resultatDiv.classList.remove("echec");
+                        perso.classList.add("happy");
                     } else {
                         resultatDiv.textContent = "Fail";
-                        de.classList.remove("action");
                         resultatDiv.classList.add("echec");
-                        resultatDiv.classList.remove("action");
+                        perso.classList.add("sad");
+                        de.classList.remove("action");
                     }
                 }
             }, 50);
