@@ -9,10 +9,11 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: linear-gradient(135deg, #BA7648, #7E6C7C);
             color: #fff;
             padding: 20px;
             margin: 0;
+            overflow-x: hidden;
         }
 
         h1 {
@@ -21,114 +22,155 @@
             text-shadow: 2px 2px 5px #000;
         }
 
-        /* NEW info line */
         #info {
             font-size: 1.2em;
             margin-bottom: 20px;
             opacity: 0.9;
         }
 
+        /* Personnage (UNE SEULE IMAGE) */
+        #perso {
+            width: 180px;
+            height: auto;
+            margin: 0 auto 20px auto;
+            transition: transform 0.4s ease, filter 0.4s ease;
+        }
+
+        #perso.happy {
+            transform: scale(1.15) rotate(5deg);
+            filter: drop-shadow(0 0 15px #ffe17a);
+        }
+
+        #perso.sad {
+            transform: scale(0.85);
+            filter: grayscale(100%) brightness(0.6);
+        }
+
+        /* Dé */
         #de {
             width: 180px;
             height: 180px;
             margin: 0 auto;
-            background: #fff;
-            color: #333;
+            background: linear-gradient(145deg, #fff5e6, #f5e2b8);
+            color: #2e1f47;
             font-size: 60px;
+            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 20px;
-            border: 5px solid #444;
+            border-radius: 25px;
+            border: 5px solid #BA7648;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            box-shadow: 
+                0 10px 25px rgba(0,0,0,0.5),
+                inset 0 2px 5px rgba(255,255,255,0.5),
+                inset 0 -2px 5px rgba(0,0,0,0.2);
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        /* Suppression hover moche */
+        #de:hover {
+            transform: none;
+            box-shadow: 
+                0 10px 25px rgba(0,0,0,0.5),
+                inset 0 2px 5px rgba(255,255,255,0.5),
+                inset 0 -2px 5px rgba(0,0,0,0.2);
         }
 
         #de.action {
-            background: #ffdd57;
-            color: #000;
-            border-color: #ff9900;
-            box-shadow: 0 10px 30px rgba(255,200,50,0.7);
+            background: linear-gradient(145deg, #d49768, #BA7648);
+            color: #fff;
+            border-color: #7E6C7C;
+            box-shadow: 
+                0 15px 40px rgba(186, 118, 72, 0.9),
+                0 0 30px rgba(186, 118, 72, 0.6),
+                inset 0 2px 8px rgba(255,255,255,0.3);
+            animation: pulse-shake 0.6s ease-in-out;
+        }
+
+        @keyframes pulse-shake {
+            25% { transform: scale(1.15) rotate(-5deg); }
+            50% { transform: scale(1.2) rotate(5deg); }
+            75% { transform: scale(1.15) rotate(-3deg); }
+        }
+
+        #de.spin {
+            animation: spin3d 0.7s ease-in-out infinite;
+        }
+
+        @keyframes spin3d {
+            25% { transform: rotate3d(1, 1, 0, 90deg) scale(1.15); }
+            50% { transform: rotate3d(1, 1, 0, 180deg) scale(1.2); }
+            75% { transform: rotate3d(1, 1, 0, 270deg) scale(1.15); }
+        }
+
+        #de.landing {
+            animation: land 0.5s ease-out;
+        }
+
+        @keyframes land {
+            0% { transform: translateY(-30px) rotate(20deg); opacity: 0.8; }
+            60% { transform: translateY(5px) rotate(-5deg); }
+            100% { transform: translateY(0) rotate(0deg); opacity: 1; }
         }
 
         #resultat {
-            font-size: 1.8em;
+            font-size: 2.5em;
             margin-top: 25px;
-            min-height: 50px;
-            transition: color 0.3s;
+            min-height: 80px;
+            font-weight: bold;
         }
 
-        #resultat.action {
-            color: #ffdd57;
-            text-shadow: 2px 2px 5px #000;
+        #resultat .emoji { font-size: 1.5em; }
+        #resultat .text { font-size: 0.8em; }
+
+        .particle, .star, .flash-overlay { pointer-events: none; }
+
+        .particle {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: particle-explode 1.2s ease-out forwards;
         }
 
-        #resultat.echec {
-            color: #ccc;
+        @keyframes particle-explode {
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
-        button {
-            margin-top: 30px;
-            font-size: 1.3em;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            background: #ff9900;
-            color: #fff;
-            transition: background 0.3s;
-            width: 80%;
-            max-width: 250px;
+        .star {
+            position: fixed;
+            font-size: 30px;
+            animation: star-rise 2s ease-out forwards;
         }
 
-        button:hover {
-            background: #ffcc33;
+        @keyframes star-rise {
+            50% { transform: scale(1.5) translateY(-100px); }
+            100% { transform: scale(0) translateY(-200px); opacity: 0; }
         }
 
-        /* 📱 Mobile mode */
-        @media (max-width: 600px) {
-
-            body {
-                padding: 10px;
-            }
-
-            h1 {
-                font-size: 1.7em;
-                margin-bottom: 8px;
-            }
-
-            #info {
-                font-size: 1em;
-                margin-bottom: 12px;
-            }
-
-            #de {
-                width: 130px;
-                height: 130px;
-                font-size: 40px;
-                border-width: 4px;
-            }
-
-            #resultat {
-                font-size: 1.4em;
-                margin-top: 15px;
-            }
-
-            button {
-                font-size: 1.1em;
-                padding: 10px 15px;
-                width: 90%;
-                max-width: 220px;
-            }
+        .flash-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, rgba(186,118,72,0.4), transparent);
+            animation: flash 0.5s ease-out;
         }
 
+        @keyframes flash {
+            50% { opacity: 1; }
+        }
     </style>
 </head>
+
 <body>
 
     <h1>Magic 10-Sided Dice</h1>
-    <div id="info">Roll a <strong>5</strong> Swap your dice with the player of your choice!</div>
+    <div id="info">Roll a <strong>5</strong> to have a special effect!</div>
+
+    <img id="perso" src="image/1 1.png" alt="Personnage" />
 
     <div id="de">🎲</div>
     <div id="resultat"></div>
@@ -137,42 +179,125 @@
     <script>
         const faces = [1,2,3,4,5,6,7,8,9,10];
         const actionFace = 5;
-        const de = document.getElementById('de');
-        const resultatDiv = document.getElementById('resultat');
-        const bouton = document.getElementById('lancer');
 
-        function lancerDeSimule() {
-            let compteur = 0;
-            const iterations = 20;
+        const de = document.getElementById("de");
+        const perso = document.getElementById("perso");
+        const resultatDiv = document.getElementById("resultat");
+        const bouton = document.getElementById("lancer");
 
-            const interval = setInterval(() => {
-                const chiffreTemp = faces[Math.floor(Math.random() * faces.length)];
-                de.textContent = chiffreTemp;
-                compteur++;
+        /* Sons */
+        const soundRoll = new Audio("sounds/roll.mp3");
+        const soundSuccess = new Audio("sounds/success.mp3");
+        const soundFail = new Audio("sounds/fail.mp3");
 
-                if (compteur >= iterations) {
-                    clearInterval(interval);
-
-                    const final = faces[Math.floor(Math.random() * faces.length)];
-                    de.textContent = final;
-
-                    if (final === actionFace) {
-                        resultatDiv.textContent = "Draw a hard card!";
-                        de.classList.add("action");
-                        resultatDiv.classList.add("action");
-                        resultatDiv.classList.remove("echec");
-                    } else {
-                        resultatDiv.textContent = "Fail";
-                        de.classList.remove("action");
-                        resultatDiv.classList.add("echec");
-                        resultatDiv.classList.remove("action");
-                    }
-                }
-            }, 50);
+        function createParticles() {
+            const rect = de.getBoundingClientRect();
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement("div");
+                p.className = "particle";
+                const angle = (Math.PI * 2 * i) / 20;
+                const dist = 120 + Math.random() * 80;
+                p.style.left = rect.left + rect.width/2 + "px";
+                p.style.top = rect.top + rect.height/2 + "px";
+                p.style.setProperty("--tx", Math.cos(angle)*dist + "px");
+                p.style.setProperty("--ty", Math.sin(angle)*dist + "px");
+                p.style.background = `hsl(${Math.random()*60+20},70%,60%)`;
+                document.body.appendChild(p);
+                setTimeout(()=>p.remove(),1200);
+            }
         }
 
-        de.addEventListener('click', lancerDeSimule);
-        bouton.addEventListener('click', lancerDeSimule);
+        function createStars() {
+            const rect = de.getBoundingClientRect();
+            const emojis = ["⭐","✨","🌟","💫","🎯"];
+            for (let i = 0; i < 8; i++) {
+                const s = document.createElement("div");
+                s.className = "star";
+                s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+                s.style.left = rect.left + rect.width/2 + (Math.random()-0.5)*100 + "px";
+                s.style.top = rect.top + rect.height/2 + "px";
+                s.style.animationDelay = (i*0.1)+"s";
+                document.body.appendChild(s);
+                setTimeout(()=>s.remove(),2000);
+            }
+        }
+
+        function createFlash() {
+            const f = document.createElement("div");
+            f.className = "flash-overlay";
+            document.body.appendChild(f);
+            setTimeout(()=>f.remove(),500);
+        }
+
+        function lancerDeSimule() {
+
+            // Reset personnage
+            perso.classList.remove("happy","sad");
+
+            resultatDiv.innerHTML = "";
+            resultatDiv.classList.remove("action","echec");
+
+            de.classList.remove("landing","action");
+            de.classList.add("spin");
+
+            soundRoll.currentTime = 0;
+            soundRoll.play();
+
+            let compteur = 0;
+            const interval = setInterval(() => {
+                de.textContent = faces[Math.floor(Math.random()*faces.length)];
+                compteur++;
+
+                if (compteur >= 20) {
+                    clearInterval(interval);
+
+                    const final = faces[Math.floor(Math.random()*faces.length)];
+                    de.textContent = final;
+
+                    de.classList.remove("spin");
+                    de.classList.add("landing");
+
+                    setTimeout(() => {
+
+                        if (final === actionFace) {
+                            soundSuccess.currentTime = 0;
+                            soundSuccess.play();
+
+                            perso.classList.add("happy");
+
+                            resultatDiv.innerHTML = `
+                                <span class="emoji">🎉</span>
+                                <span class="text">DRAW A HARD QUESTION CARD!</span>
+                            `;
+                            resultatDiv.classList.add("action");
+
+                            de.classList.add("action");
+                            createFlash();
+                            createParticles();
+                            createStars();
+
+                            setTimeout(()=>de.classList.remove("action"),600);
+
+                        } else {
+                            soundFail.currentTime = 0;
+                            soundFail.play();
+
+                            perso.classList.add("sad");
+
+                            resultatDiv.innerHTML = `
+                                <span class="emoji">💔</span>
+                                <span class="text">FAIL</span>
+                            `;
+                            resultatDiv.classList.add("echec");
+                        }
+
+                    },300);
+                }
+            },50);
+        }
+
+        de.addEventListener("click", lancerDeSimule);
+        bouton.addEventListener("click", lancerDeSimule);
     </script>
 
 </body>
