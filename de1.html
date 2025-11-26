@@ -10,8 +10,8 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
 
-            /* 🎨 Nouveau fond */
-            background: linear-gradient(135deg, #4b0082, #6a5acd);
+            /* Couleur du fond inspirée de l'image */
+            background: #1D1BAA;
             color: #fff;
 
             padding: 20px;
@@ -35,30 +35,30 @@
             height: 180px;
             margin: 0 auto;
 
-            /* 🎨 Nouvelle couleur du dé */
-            background: #f5f5f5;
+            /* Couleur du corps du personnage */
+            background: #8E8C91;
 
-            color: #222;
+            color: #2E2B31;
             font-size: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 20px;
 
-            /* 🎨 Nouvel outline */
-            border: 5px solid #333;
+            /* Contour gris foncé (jambes du perso) */
+            border: 5px solid #2E2B31;
 
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
-        /* 🎨 Couleur spéciale quand on tire un 5 */
+        /* Quand on tombe sur la face spéciale */
         #de.action {
-            background: #ffd447;
+            background: #C08A3D; /* Bronze du chapeau */
             color: #000;
-            border-color: #ff9a00;
-            box-shadow: 0 10px 30px rgba(255,200,50,0.7);
+            border-color: #8A611D;
+            box-shadow: 0 10px 30px rgba(192,138,61,0.7);
         }
 
         #resultat {
@@ -69,12 +69,12 @@
         }
 
         #resultat.action {
-            color: #ffdd57;
+            color: #C08A3D;
             text-shadow: 2px 2px 5px #000;
         }
 
         #resultat.echec {
-            color: #ddd;
+            color: #2E2B31;
         }
 
         button {
@@ -85,17 +85,17 @@
             border-radius: 10px;
             cursor: pointer;
 
-            /* 🎨 Nouveau bouton */
-            background: #9146ff;
+            /* Couleur violet de la cape */
+            background: #4B2E5C;
             color: #fff;
-            transition: background 0.3s;
 
+            transition: background 0.3s;
             width: 80%;
             max-width: 250px;
         }
 
         button:hover {
-            background: #b57eff;
+            background: #6A3E80;
         }
 
         @media (max-width: 600px) {
@@ -111,7 +111,6 @@
                 padding: 10px 15px;
             }
         }
-
     </style>
 </head>
 <body>
