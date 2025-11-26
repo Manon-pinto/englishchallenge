@@ -109,7 +109,6 @@
             75% { transform: scale(1.15) rotate(-3deg); }
         }
 
-        /* rotation animation */
         #de.spin {
             animation: spin3d 0.7s ease-in-out infinite;
         }
@@ -143,18 +142,7 @@
 
         #resultat .emoji { font-size: 1.5em; }
 
-        #resultat .text {
-            font-size: 0.8em;
-        }
-
-        #resultat.action .text {
-            animation: shine 2s linear infinite;
-        }
-
-        @keyframes shine {
-            0% { opacity: 1; }
-            100% { opacity: 1; }
-        }
+        #resultat .text { font-size: 0.8em; }
 
         #resultat.echec { opacity: 0.7; }
 
@@ -173,7 +161,6 @@
             font-weight: bold;
         }
 
-        /* Particules de succès */
         .particle {
             position: fixed;
             width: 10px;
@@ -188,7 +175,6 @@
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
-        /* Étoiles de succès */
         .star {
             position: fixed;
             font-size: 30px;
@@ -203,7 +189,6 @@
             100% { transform: scale(0) translateY(-200px); opacity: 0; }
         }
 
-        /* Flash */
         .flash-overlay {
             position: fixed;
             inset: 0;
@@ -224,9 +209,10 @@
 <body>
 
     <h1>Magic 10-Sided Dice</h1>
-    <div id="info">Roll a <strong>5</strong> to have a special effect !</div>
+    <div id="info">Roll a <strong>5</strong> to draw a hard card!</div>
 
-    <img id="perso" src="image/1 1.png" alt="Personnage" />
+    <!-- PERSONNAGE QUI RESTE LE MÊME AU DÉBUT -->
+    <img id="perso" src="image/1.png" alt="Personnage" />
 
     <div id="de">🎲</div>
     <div id="resultat"></div>
@@ -299,9 +285,14 @@
         }
 
         function lancerDeSimule() {
-            resultatDiv.innerHTML = '';
-            perso.classList.remove("happy", "sad");
+
+            // RESET au personnage de base
             perso.src = "image/1.png";
+            perso.classList.remove("happy", "sad");
+
+            resultatDiv.innerHTML = '';
+            resultatDiv.classList.remove("action", "echec");
+
             de.classList.remove("landing", "action");
             de.classList.add("spin");
 
@@ -327,6 +318,7 @@
 
                     setTimeout(() => {
                         if (final === actionFace) {
+
                             soundSuccess.currentTime = 0;
                             soundSuccess.play();
 
@@ -336,8 +328,8 @@
                                 <span class="emoji">🎉</span>
                                 <span class="text">DRAW A HARD CARD!</span>
                             `;
+
                             resultatDiv.classList.add("action");
-                            resultatDiv.classList.remove("echec");
                             perso.classList.add("happy");
                             de.classList.add("action");
 
@@ -351,6 +343,7 @@
                             }, 600);
 
                         } else {
+
                             soundFail.currentTime = 0;
                             soundFail.play();
 
@@ -360,8 +353,8 @@
                                 <span class="emoji">💔</span>
                                 <span class="text">FAIL</span>
                             `;
+
                             resultatDiv.classList.add("echec");
-                            resultatDiv.classList.remove("action");
                             perso.classList.add("sad");
                             de.classList.remove("landing");
                         }
