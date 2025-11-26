@@ -7,10 +7,10 @@
 
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
+            background: linear-gradient(135deg, #5b3c88, #2e1f47);
+            color: #fff;
             padding: 20px;
             margin: 0;
         }
@@ -18,58 +18,72 @@
         h1 {
             font-size: 2.2em;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 5px #000;
         }
 
         #info {
             font-size: 1.2em;
             margin-bottom: 20px;
+            opacity: 0.9;
         }
 
-        /* PERSONNAGE */
+        /* Personnage */
         #perso {
-            font-size: 90px;
-            margin-bottom: 15px;
-            transition: transform 0.3s ease;
+            width: 180px;
+            height: auto;
+            margin: 0 auto 20px auto;
+            transition: transform 0.4s ease, filter 0.4s ease;
         }
 
-        /* DÉ */
+        #perso.happy {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 10px #ffdd57);
+        }
+
+        #perso.sad {
+            transform: scale(0.9);
+            filter: grayscale(60%);
+        }
+
+        /* Dé */
         #de {
             width: 180px;
             height: 180px;
             margin: 0 auto;
-            background: #ffffff;
-            color: #000;
+            background: #f5e2b8;
+            color: #2e1f47;
             font-size: 60px;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             border-radius: 20px;
-            border: 5px solid #333;
+            border: 5px solid #3e2c66;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
-        /* Couleur quand réussite */
         #de.action {
             background: #ffdd57;
+            color: #000;
             border-color: #ff9900;
+            box-shadow: 0 10px 30px rgba(255,200,50,0.7);
         }
 
-        /* Animation rotation */
-        .rotate {
-            animation: spin 0.6s linear infinite;
+        /* rotation animation */
+        #de.spin {
+            animation: spin 0.5s linear infinite;
         }
 
         @keyframes spin {
-            from { transform: rotateY(0); }
-            to   { transform: rotateY(360deg); }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         #resultat {
             font-size: 1.8em;
-            margin-top: 20px;
-            min-height: 40px;
+            margin-top: 25px;
+            min-height: 50px;
         }
 
         #resultat.action {
@@ -81,21 +95,28 @@
         }
 
         button {
-            margin-top: 25px;
+            margin-top: 30px;
             font-size: 1.3em;
             padding: 12px 20px;
             border: none;
-            border-radius: 12px;
-            background: #ff9900;
-            color: white;
+            border-radius: 10px;
             cursor: pointer;
-            transition: 0.3s;
+            background: #ff9900;
+            color: #fff;
+            transition: background 0.3s;
+            width: 80%;
+            max-width: 250px;
         }
 
         button:hover {
             background: #ffcc33;
         }
 
+        @media (max-width: 600px) {
+            #de { width: 130px; height: 130px; font-size: 40px; }
+            #perso { width: 140px; }
+            button { width: 90%; }
+        }
     </style>
 </head>
 <body>
@@ -103,71 +124,60 @@
     <h1>Magic 10-Sided Dice</h1>
     <div id="info">Roll a <strong>5</strong> to draw a hard card!</div>
 
-    <!-- PERSONNAGE -->
-    <div id="perso">🙂</div>
+    <!-- Personnage inséré ici -->
+    <img id="perso" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyoAAAQCCAYAAABDkQwSAAAMTGlDQ1BJQ0MgUHJ...yCKHRCxYVcWxe5aFgsqK+tiwa68CQF02Ve+N983d/77z5l/zjl35t47ANDb+VJp" />
 
     <div id="de">🎲</div>
     <div id="resultat"></div>
-
     <button id="lancer">Roll the dice</button>
 
+    <script>
+        const faces = [1,2,3,4,5,6,7,8,9,10];
+        const actionFace = 5;
 
-<script>
-    const faces = [1,2,3,4,5,6,7,8,9,10];
-    const actionFace = 5;
+        const de = document.getElementById('de');
+        const perso = document.getElementById('perso');
+        const resultatDiv = document.getElementById('resultat');
+        const bouton = document.getElementById('lancer');
 
-    const de = document.getElementById('de');
-    const resultatDiv = document.getElementById('resultat');
-    const bouton = document.getElementById('lancer');
-    const perso = document.getElementById('perso');
+        function lancerDeSimule() {
 
-    function lancerDeSimule() {
+            perso.classList.remove("happy", "sad");
+            de.classList.add("spin");
 
-        perso.textContent = "😐"; // expression neutre pendant le roulage
-        resultatDiv.textContent = "";
+            let compteur = 0;
+            const iterations = 20;
 
-        de.classList.add("rotate");
+            const interval = setInterval(() => {
+                const chiffreTemp = faces[Math.floor(Math.random() * faces.length)];
+                de.textContent = chiffreTemp;
+                compteur++;
 
-        let compteur = 0;
-        const iterations = 15;
+                if (compteur >= iterations) {
+                    clearInterval(interval);
 
-        const interval = setInterval(() => {
-            de.textContent = faces[Math.floor(Math.random() * 10)];
-            compteur++;
+                    const final = faces[Math.floor(Math.random() * faces.length)];
+                    de.textContent = final;
+                    de.classList.remove("spin");
 
-            if (compteur >= iterations) {
-                clearInterval(interval);
-
-                const final = faces[Math.floor(Math.random() * 10)];
-
-                de.classList.remove("rotate");
-                de.textContent = final;
-
-                if (final === actionFace) {
-                    // Réussite
-                    resultatDiv.textContent = "Draw a hard card!";
-                    resultatDiv.classList.add("action");
-                    resultatDiv.classList.remove("echec");
-
-                    de.classList.add("action");
-                    perso.textContent = "😎"; // satisfait
-
-                } else {
-                    // Échec
-                    resultatDiv.textContent = "Fail";
-                    resultatDiv.classList.add("echec");
-                    resultatDiv.classList.remove("action");
-
-                    de.classList.remove("action");
-                    perso.textContent = "😭"; // triste
+                    if (final === actionFace) {
+                        resultatDiv.textContent = "Draw a hard card!";
+                        resultatDiv.classList.add("action");
+                        resultatDiv.classList.remove("echec");
+                        perso.classList.add("happy");
+                    } else {
+                        resultatDiv.textContent = "Fail";
+                        resultatDiv.classList.add("echec");
+                        resultatDiv.classList.remove("action");
+                        perso.classList.add("sad");
+                    }
                 }
-            }
-        }, 70);
-    }
+            }, 50);
+        }
 
-    de.addEventListener('click', lancerDeSimule);
-    bouton.addEventListener('click', lancerDeSimule);
-</script>
+        de.addEventListener('click', lancerDeSimule);
+        bouton.addEventListener('click', lancerDeSimule);
+    </script>
 
 </body>
 </html>
