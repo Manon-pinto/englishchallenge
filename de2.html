@@ -28,7 +28,7 @@
             opacity: 0.9;
         }
 
-        /* Personnage (UNE SEULE IMAGE) */
+        /* Personnage (nouvelle image 2 1.png) */
         #perso {
             width: 180px;
             height: auto;
@@ -46,7 +46,7 @@
             filter: grayscale(100%) brightness(0.6);
         }
 
-        /* 🎲 --- DÉ (NOUVELLES COULEURS) --- */
+        /* 🎲 Dé en couleurs #343121 / #B88B4D */
         #de {
             width: 180px;
             height: 180px;
@@ -71,7 +71,7 @@
             perspective: 1000px;
         }
 
-        /* PAS DE HOVER MOCHE */
+        /* Pas de hover */
         #de:hover {
             transform: none;
             box-shadow: 
@@ -127,7 +127,6 @@
         #resultat .emoji { font-size: 1.5em; }
         #resultat .text { font-size: 0.8em; }
 
-        /* Particles - Stars - Flash */
         .particle, .star, .flash-overlay { pointer-events: none; }
 
         .particle {
@@ -163,7 +162,6 @@
         @keyframes flash {
             50% { opacity: 1; }
         }
-
     </style>
 </head>
 
@@ -172,7 +170,8 @@
     <h1>Magic 10-Sided Dice</h1>
     <div id="info">Roll a <strong>5</strong> to have a special effect!</div>
 
-    <img id="perso" src="image/1 1.png" alt="Personnage" />
+    <!-- NOUVELLE IMAGE -->
+    <img id="perso" src="image/2 1.png" alt="Personnage" />
 
     <div id="de">🎲</div>
     <div id="resultat"></div>
@@ -187,7 +186,7 @@
         const resultatDiv = document.getElementById("resultat");
         const bouton = document.getElementById("lancer");
 
-        /* 🌟 Sons */
+        /* Sons */
         const soundRoll = new Audio("sounds/roll.mp3");
         const soundSuccess = new Audio("sounds/success.mp3");
         const soundFail = new Audio("sounds/fail.mp3");
@@ -269,7 +268,7 @@
 
                             resultatDiv.innerHTML = `
                                 <span class="emoji">🎉</span>
-                                <span class="text">DRAW A HARD QUESTION CARD!</span>
+                                <span class="text">to swap your dice with any player</span>
                             `;
                             resultatDiv.classList.add("action");
 
