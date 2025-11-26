@@ -21,7 +21,6 @@
             text-shadow: 2px 2px 5px #000;
         }
 
-        /* NEW info line */
         #info {
             font-size: 1.2em;
             margin-bottom: 20px;
@@ -32,22 +31,21 @@
             width: 180px;
             height: 180px;
             margin: 0 auto;
-            background: #fff;
-            color: #333;
-            font-size: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+
             border-radius: 20px;
             border: 5px solid #444;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+
+            /* retire l’ancien texte */
+            font-size: 0;
         }
 
         #de.action {
-            background: #ffdd57;
-            color: #000;
             border-color: #ff9900;
             box-shadow: 0 10px 30px rgba(255,200,50,0.7);
         }
@@ -86,57 +84,42 @@
             background: #ffcc33;
         }
 
-        /* 📱 Mobile mode */
         @media (max-width: 600px) {
-
-            body {
-                padding: 10px;
-            }
-
-            h1 {
-                font-size: 1.7em;
-                margin-bottom: 8px;
-            }
-
-            #info {
-                font-size: 1em;
-                margin-bottom: 12px;
-            }
-
             #de {
                 width: 130px;
                 height: 130px;
-                font-size: 40px;
-                border-width: 4px;
-            }
-
-            #resultat {
-                font-size: 1.4em;
-                margin-top: 15px;
             }
 
             button {
-                font-size: 1.1em;
-                padding: 10px 15px;
                 width: 90%;
-                max-width: 220px;
             }
         }
-
     </style>
 </head>
 <body>
 
     <h1>Magic 10-Sided Dice</h1>
-    <div id="info">Roll a <strong>5</strong> to draw a hard card!</div>
+    <div id="info">Roll a <strong>5</strong> to have a special action !</div>
 
-    <div id="de">🎲</div>
+    <div id="de"></div>
     <div id="resultat"></div>
     <button id="lancer">Roll the dice</button>
 
     <script>
-        const faces = [1,2,3,4,5,6,7,8,9,10];
-        const actionFace = 5;
+        const faces = [
+            "images/face1.png",
+            "images/face2.png",
+            "images/face3.png",
+            "images/face4.png",
+            "images/face5.png",
+            "images/face6.png",
+            "images/face7.png",
+            "images/face8.png",
+            "images/face9.png",
+            "images/face10.png"
+        ];
+
+        const actionFace = 4; // 👉 index 4 = face5.png (compte 0)
         const de = document.getElementById('de');
         const resultatDiv = document.getElementById('resultat');
         const bouton = document.getElementById('lancer');
@@ -146,17 +129,18 @@
             const iterations = 20;
 
             const interval = setInterval(() => {
-                const chiffreTemp = faces[Math.floor(Math.random() * faces.length)];
-                de.textContent = chiffreTemp;
+                const randomImg = faces[Math.floor(Math.random() * faces.length)];
+                de.style.backgroundImage = `url(${randomImg})`;
                 compteur++;
 
                 if (compteur >= iterations) {
                     clearInterval(interval);
 
-                    const final = faces[Math.floor(Math.random() * faces.length)];
-                    de.textContent = final;
+                    const finalIndex = Math.floor(Math.random() * faces.length);
+                    const finalImg = faces[finalIndex];
+                    de.style.backgroundImage = `url(${finalImg})`;
 
-                    if (final === actionFace) {
+                    if (finalIndex === actionFace) {
                         resultatDiv.textContent = "Draw a hard card!";
                         de.classList.add("action");
                         resultatDiv.classList.add("action");
@@ -173,6 +157,9 @@
 
         de.addEventListener('click', lancerDeSimule);
         bouton.addEventListener('click', lancerDeSimule);
+
+        // Affichage initial
+        de.style.backgroundImage = `url(${faces[0]})`;
     </script>
 
 </body>
