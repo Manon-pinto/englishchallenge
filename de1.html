@@ -1,4 +1,4 @@
-1<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,7 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            background: linear-gradient(135deg, #5b3c88, #2e1f47);
+            background: linear-gradient(135deg, #BA7648, #7E6C7C);
             color: #fff;
             padding: 20px;
             margin: 0;
@@ -57,27 +57,42 @@
             align-items: center;
             justify-content: center;
             border-radius: 20px;
-            border: 5px solid #3e2c66;
+            border: 5px solid #BA7648;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        #de:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(186, 118, 72, 0.6);
         }
 
         #de.action {
-            background: #ffdd57;
-            color: #000;
-            border-color: #ff9900;
-            box-shadow: 0 10px 30px rgba(255,200,50,0.7);
+            background: #BA7648;
+            color: #fff;
+            border-color: #7E6C7C;
+            box-shadow: 0 10px 30px rgba(186, 118, 72, 0.9);
+            animation: pulse 0.6s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
 
         /* rotation animation */
         #de.spin {
-            animation: spin 0.5s linear infinite;
+            animation: spin3d 0.6s ease-in-out infinite;
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @keyframes spin3d {
+            0% { transform: rotate3d(1, 1, 0, 0deg); }
+            25% { transform: rotate3d(1, 1, 0, 90deg) scale(1.1); }
+            50% { transform: rotate3d(1, 1, 0, 180deg); }
+            75% { transform: rotate3d(1, 1, 0, 270deg) scale(1.1); }
+            100% { transform: rotate3d(1, 1, 0, 360deg); }
         }
 
         #resultat {
@@ -87,7 +102,14 @@
         }
 
         #resultat.action {
-            color: #ffdd57;
+            color: #BA7648;
+            text-shadow: 0 0 10px rgba(186, 118, 72, 0.8);
+            animation: glow 1s ease-in-out;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; transform: scale(1.05); }
         }
 
         #resultat.echec {
@@ -101,15 +123,22 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            background: #ff9900;
+            background: #BA7648;
             color: #fff;
-            transition: background 0.3s;
+            transition: all 0.3s;
             width: 80%;
             max-width: 250px;
+            box-shadow: 0 5px 15px rgba(186, 118, 72, 0.4);
         }
 
         button:hover {
-            background: #ffcc33;
+            background: #7E6C7C;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(126, 108, 124, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         @media (max-width: 600px) {
@@ -125,7 +154,7 @@
     <div id="info">Roll a <strong>5</strong> to draw a hard card!</div>
 
     <!-- Personnage inséré ici -->
-    <img id="perso" src="data:image/1.png;base64,iVBORw0KGgoAAAANSUhEUgAAAyoAAAQCCAYAAABDkQwSAAAMTGlDQ1BJQ0MgUHJ...yCKHRCxYVcWxe5aFgsqK+tiwa68CQF02Ve+N983d/77z5l/zjl35t47ANDb+VJp" />
+    <img id="perso" src="image/1.png" alt="Personnage" />
 
     <div id="de">🎲</div>
     <div id="resultat"></div>
@@ -165,6 +194,8 @@
                         resultatDiv.classList.add("action");
                         resultatDiv.classList.remove("echec");
                         perso.classList.add("happy");
+                        de.classList.add("action");
+                        setTimeout(() => de.classList.remove("action"), 600);
                     } else {
                         resultatDiv.textContent = "Fail";
                         resultatDiv.classList.add("echec");
