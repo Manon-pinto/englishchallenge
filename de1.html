@@ -28,7 +28,7 @@
             opacity: 0.9;
         }
 
-        /* Personnage */
+        /* Personnage (UNE SEULE IMAGE) */
         #perso {
             width: 180px;
             height: auto;
@@ -37,19 +37,13 @@
         }
 
         #perso.happy {
-            transform: scale(1.1) rotate(5deg);
-            filter: drop-shadow(0 0 15px #ffdd57);
-            animation: bounce 0.5s ease;
+            transform: scale(1.15) rotate(5deg);
+            filter: drop-shadow(0 0 15px #ffe17a);
         }
 
         #perso.sad {
-            transform: scale(0.9);
-            filter: grayscale(60%) brightness(0.7);
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: scale(1.1) translateY(0); }
-            50% { transform: scale(1.1) translateY(-10px); }
+            transform: scale(0.85);
+            filter: grayscale(100%) brightness(0.6);
         }
 
         /* Dé */
@@ -77,18 +71,13 @@
             perspective: 1000px;
         }
 
-        /* suppression hover moche */
+        /* Suppression hover moche */
         #de:hover {
             transform: none;
             box-shadow: 
                 0 10px 25px rgba(0,0,0,0.5),
                 inset 0 2px 5px rgba(255,255,255,0.5),
                 inset 0 -2px 5px rgba(0,0,0,0.2);
-        }
-
-        #de:hover::after {
-            opacity: 0;
-            animation: none;
         }
 
         #de.action {
@@ -103,7 +92,6 @@
         }
 
         @keyframes pulse-shake {
-            0%, 100% { transform: scale(1) rotate(0deg); }
             25% { transform: scale(1.15) rotate(-5deg); }
             50% { transform: scale(1.2) rotate(5deg); }
             75% { transform: scale(1.15) rotate(-3deg); }
@@ -114,11 +102,9 @@
         }
 
         @keyframes spin3d {
-            0% { transform: rotate3d(1, 1, 0, 0deg) scale(1); }
             25% { transform: rotate3d(1, 1, 0, 90deg) scale(1.15); }
             50% { transform: rotate3d(1, 1, 0, 180deg) scale(1.2); }
             75% { transform: rotate3d(1, 1, 0, 270deg) scale(1.15); }
-            100% { transform: rotate3d(1, 1, 0, 360deg) scale(1); }
         }
 
         #de.landing {
@@ -128,7 +114,6 @@
         @keyframes land {
             0% { transform: translateY(-30px) rotate(20deg); opacity: 0.8; }
             60% { transform: translateY(5px) rotate(-5deg); }
-            80% { transform: translateY(-3px) rotate(2deg); }
             100% { transform: translateY(0) rotate(0deg); opacity: 1; }
         }
 
@@ -136,55 +121,33 @@
             font-size: 2.5em;
             margin-top: 25px;
             min-height: 80px;
-            transition: all 0.3s ease;
             font-weight: bold;
         }
 
         #resultat .emoji { font-size: 1.5em; }
-
         #resultat .text { font-size: 0.8em; }
 
-        #resultat.echec { opacity: 0.7; }
-
-        button {
-            margin-top: 30px;
-            font-size: 1.3em;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            background: linear-gradient(145deg, #d49768, #BA7648);
-            color: #fff;
-            transition: all 0.3s;
-            width: 80%;
-            max-width: 250px;
-            font-weight: bold;
-        }
+        .particle, .star, .flash-overlay { pointer-events: none; }
 
         .particle {
             position: fixed;
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            pointer-events: none;
             animation: particle-explode 1.2s ease-out forwards;
         }
 
         @keyframes particle-explode {
-            0% { transform: scale(1); opacity: 1; }
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
         .star {
             position: fixed;
             font-size: 30px;
-            pointer-events: none;
             animation: star-rise 2s ease-out forwards;
-            z-index: 1000;
         }
 
         @keyframes star-rise {
-            0% { transform: scale(0); opacity: 1; }
             50% { transform: scale(1.5) translateY(-100px); }
             100% { transform: scale(0) translateY(-200px); opacity: 0; }
         }
@@ -193,16 +156,12 @@
             position: fixed;
             inset: 0;
             background: radial-gradient(circle, rgba(186,118,72,0.4), transparent);
-            pointer-events: none;
-            opacity: 0;
             animation: flash 0.5s ease-out;
         }
 
         @keyframes flash {
-            0%, 100% { opacity: 0; }
             50% { opacity: 1; }
         }
-
     </style>
 </head>
 
@@ -211,7 +170,6 @@
     <h1>Magic 10-Sided Dice</h1>
     <div id="info">Roll a <strong>5</strong> to draw a hard card!</div>
 
-    <!-- PERSONNAGE QUI RESTE LE MÊME AU DÉBUT -->
     <img id="perso" src="image/1 1.png" alt="Personnage" />
 
     <div id="de">🎲</div>
@@ -222,149 +180,124 @@
         const faces = [1,2,3,4,5,6,7,8,9,10];
         const actionFace = 5;
 
-        const de = document.getElementById('de');
-        const perso = document.getElementById('perso');
-        const resultatDiv = document.getElementById('resultat');
-        const bouton = document.getElementById('lancer');
+        const de = document.getElementById("de");
+        const perso = document.getElementById("perso");
+        const resultatDiv = document.getElementById("resultat");
+        const bouton = document.getElementById("lancer");
 
         /* Sons */
         const soundRoll = new Audio("sounds/roll.mp3");
         const soundSuccess = new Audio("sounds/success.mp3");
         const soundFail = new Audio("sounds/fail.mp3");
 
-        soundRoll.preload = "auto";
-        soundSuccess.preload = "auto";
-        soundFail.preload = "auto";
-
         function createParticles() {
             const rect = de.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
             for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
+                const p = document.createElement("div");
+                p.className = "particle";
                 const angle = (Math.PI * 2 * i) / 20;
-                const distance = 120 + Math.random() * 80;
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance;
-                particle.style.left = centerX + 'px';
-                particle.style.top = centerY + 'px';
-                particle.style.setProperty('--tx', tx + 'px');
-                particle.style.setProperty('--ty', ty + 'px');
-                particle.style.background = `hsl(${Math.random() * 60 + 20}, 70%, 60%)`;
-                document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 1200);
+                const dist = 120 + Math.random() * 80;
+                p.style.left = rect.left + rect.width/2 + "px";
+                p.style.top = rect.top + rect.height/2 + "px";
+                p.style.setProperty("--tx", Math.cos(angle)*dist + "px");
+                p.style.setProperty("--ty", Math.sin(angle)*dist + "px");
+                p.style.background = `hsl(${Math.random()*60+20},70%,60%)`;
+                document.body.appendChild(p);
+                setTimeout(()=>p.remove(),1200);
             }
         }
 
         function createStars() {
             const rect = de.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            const emojis = ['⭐', '✨', '🌟', '💫', '🎯'];
-
+            const emojis = ["⭐","✨","🌟","💫","🎯"];
             for (let i = 0; i < 8; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                star.style.left = (centerX + (Math.random() - 0.5) * 100) + 'px';
-                star.style.top = centerY + 'px';
-                star.style.animationDelay = (i * 0.1) + 's';
-                document.body.appendChild(star);
-                setTimeout(() => star.remove(), 2000);
+                const s = document.createElement("div");
+                s.className = "star";
+                s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+                s.style.left = rect.left + rect.width/2 + (Math.random()-0.5)*100 + "px";
+                s.style.top = rect.top + rect.height/2 + "px";
+                s.style.animationDelay = (i*0.1)+"s";
+                document.body.appendChild(s);
+                setTimeout(()=>s.remove(),2000);
             }
         }
 
         function createFlash() {
-            const flash = document.createElement('div');
-            flash.className = 'flash-overlay';
-            document.body.appendChild(flash);
-            setTimeout(() => flash.remove(), 500);
+            const f = document.createElement("div");
+            f.className = "flash-overlay";
+            document.body.appendChild(f);
+            setTimeout(()=>f.remove(),500);
         }
 
         function lancerDeSimule() {
 
-            // RESET au personnage de base
-            perso.src = "image/1.png";
-            perso.classList.remove("happy", "sad");
+            // Reset personnage
+            perso.classList.remove("happy","sad");
 
-            resultatDiv.innerHTML = '';
-            resultatDiv.classList.remove("action", "echec");
+            resultatDiv.innerHTML = "";
+            resultatDiv.classList.remove("action","echec");
 
-            de.classList.remove("landing", "action");
+            de.classList.remove("landing","action");
             de.classList.add("spin");
 
             soundRoll.currentTime = 0;
             soundRoll.play();
 
             let compteur = 0;
-            const iterations = 20;
-
             const interval = setInterval(() => {
-                const chiffreTemp = faces[Math.floor(Math.random() * faces.length)];
-                de.textContent = chiffreTemp;
+                de.textContent = faces[Math.floor(Math.random()*faces.length)];
                 compteur++;
 
-                if (compteur >= iterations) {
+                if (compteur >= 20) {
                     clearInterval(interval);
 
-                    const final = faces[Math.floor(Math.random() * faces.length)];
+                    const final = faces[Math.floor(Math.random()*faces.length)];
                     de.textContent = final;
 
                     de.classList.remove("spin");
                     de.classList.add("landing");
 
                     setTimeout(() => {
-                        if (final === actionFace) {
 
+                        if (final === actionFace) {
                             soundSuccess.currentTime = 0;
                             soundSuccess.play();
 
-                            perso.src = "image/1 1.png";
+                            perso.classList.add("happy");
 
                             resultatDiv.innerHTML = `
                                 <span class="emoji">🎉</span>
                                 <span class="text">DRAW A HARD CARD!</span>
                             `;
-
                             resultatDiv.classList.add("action");
-                            perso.classList.add("happy");
-                            de.classList.add("action");
 
+                            de.classList.add("action");
                             createFlash();
                             createParticles();
                             createStars();
 
-                            setTimeout(() => {
-                                de.classList.remove("action");
-                                de.classList.remove("landing");
-                            }, 600);
+                            setTimeout(()=>de.classList.remove("action"),600);
 
                         } else {
-
                             soundFail.currentTime = 0;
                             soundFail.play();
 
-                            perso.src = "image/1 1.png";
+                            perso.classList.add("sad");
 
                             resultatDiv.innerHTML = `
                                 <span class="emoji">💔</span>
                                 <span class="text">FAIL</span>
                             `;
-
                             resultatDiv.classList.add("echec");
-                            perso.classList.add("sad");
-                            de.classList.remove("landing");
                         }
-                    }, 300);
+
+                    },300);
                 }
-            }, 50);
+            },50);
         }
 
-        de.addEventListener('click', lancerDeSimule);
-        bouton.addEventListener('click', lancerDeSimule);
+        de.addEventListener("click", lancerDeSimule);
+        bouton.addEventListener("click", lancerDeSimule);
     </script>
 
 </body>
